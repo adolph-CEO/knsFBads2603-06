@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康乃心 FB 廣告成效分析｜2026 Q2（4–6月）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #16213e;
+    --ink-mid:   #3d4a6b;
+    --ink-soft:  #8892aa;
+    --bg:        #f5f6fa;
+    --surface:   #ffffff;
+    --border:    rgba(60,80,140,0.10);
+
+    --teal:       #0b7d6e;
+    --teal-mid:   #13b09b;
+    --teal-light: #e3f6f3;
+    --blue:       #1e4fa8;
+    --blue-light: #e6eefa;
+    --amber:      #b05e10;
+    --amber-light:#fdf0e3;
+    --red:        #c02b2b;
+    --red-light:  #fde8e8;
+    --purple:     #6b3fa0;
+    --purple-light:#f0eafb;
+
+    --radius:    14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d1b3e 0%, #16324f 60%, #0b4f6c 100%);
+    padding: 52px 40px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(19,176,155,.08);
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(30,79,168,.12);
+    pointer-events: none;
+  }
+  .header-inner { max-width: 980px; margin: 0 auto; position: relative; z-index: 1; }
+  .report-eyebrow {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--teal-mid);
+    font-weight: 500;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .report-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 2px;
+    background: var(--teal-mid);
+  }
+  header h1 {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 600;
+    line-height: 1.25;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,.5);
+    font-weight: 300;
+  }
+  .header-tags {
+    display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .header-tag {
+    font-size: 11px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: .04em;
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 980px; margin: 0 auto; padding: 44px 24px 80px; }
+
+  /* ── PERIOD LABEL ── */
+  .period-divider {
+    display: flex; align-items: center; gap: 14px;
+    margin: 52px 0 36px;
+  }
+  .period-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .period-label {
+    display: flex; align-items: center; gap: 9px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 18px 6px 10px;
+    white-space: nowrap;
+  }
+  .period-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .period-label span { font-size: 12px; font-weight: 500; color: var(--ink-mid); }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px,1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .kpi-card.accent { border-top: 3px solid var(--teal-mid); }
+  .kpi-label { font-size: 10px; color: var(--ink-soft); letter-spacing:.07em; text-transform:uppercase; margin-bottom:5px; }
+  .kpi-value { font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1.1; }
+  .kpi-sub   { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+  .kpi-delta { font-size: 11px; font-weight: 500; margin-top: 4px; }
+  .up   { color: var(--teal); }
+  .down { color: var(--red); }
+  .neu  { color: var(--ink-soft); }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .section-header p  { font-size: 12px; color: var(--ink-soft); }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 22px 26px;
+    margin-bottom: 14px;
+  }
+  .chart-title { font-size: 13px; font-weight: 500; color: var(--ink-mid); margin-bottom: 3px; }
+  .chart-desc  { font-size: 12px; color: var(--ink-soft); margin-bottom: 16px; }
+  .legend {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 14px; font-size: 11px; color: var(--ink-mid);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── INSIGHT GRID ── */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .insight-grid { grid-template-columns: 1fr; } }
+
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .insight-card.good   { border-left: 4px solid var(--teal); }
+  .insight-card.mid    { border-left: 4px solid var(--blue); }
+  .insight-card.warn   { border-left: 4px solid var(--amber); }
+  .insight-card.bad    { border-left: 4px solid var(--red); }
+  .insight-card.purple { border-left: 4px solid var(--purple); }
+
+  .insight-meta { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .insight-name { font-size: 13px; font-weight: 600; color: var(--ink); flex:1; min-width:0; }
+  .insight-cpa  { font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .good .insight-cpa   { color: var(--teal); }
+  .mid  .insight-cpa   { color: var(--blue); }
+  .warn .insight-cpa   { color: var(--amber); }
+  .bad  .insight-cpa   { color: var(--red); }
+  .purple .insight-cpa { color: var(--purple); }
+
+  .insight-stats { display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .stat-pill {
+    font-size: 11px; color: var(--ink-mid);
+    background: var(--bg);
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .insight-body { font-size: 12px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* ── BADGE ── */
+  .badge {
+    font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px;
+    letter-spacing: .04em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .badge-success { background: var(--teal-light);   color: var(--teal); }
+  .badge-info    { background: var(--blue-light);   color: var(--blue); }
+  .badge-warning { background: var(--amber-light);  color: var(--amber); }
+  .badge-danger  { background: var(--red-light);    color: var(--red); }
+  .badge-purple  { background: var(--purple-light); color: var(--purple); }
+
+  /* ── COMPARE ROW ── */
+  .compare-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px,1fr));
+    gap: 10px; margin-bottom: 30px;
+  }
+  .compare-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 15px 17px;
+  }
+  .compare-label { font-size: 10px; color: var(--ink-soft); letter-spacing:.06em; text-transform:uppercase; margin-bottom:4px; }
+  .compare-value { font-size: 19px; font-weight: 600; color: var(--ink); line-height:1.1; }
+  .compare-delta { font-size: 11px; font-weight: 500; margin-top: 3px; }
+
+  /* ── STOP TABLE ── */
+  .stop-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface);
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--border); font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .stop-table thead tr { background: var(--ink); color: #fff; }
+  .stop-table thead th {
+    padding: 11px 14px; text-align: left;
+    font-weight: 500; font-size: 11px; letter-spacing:.05em;
+  }
+  .stop-table tbody tr:nth-child(even) { background: var(--bg); }
+  .stop-table tbody td {
+    padding: 11px 14px; color: var(--ink-mid);
+    border-top: 1px solid var(--border); vertical-align: top;
+  }
+  .stop-table tbody td:first-child { color: var(--ink); }
+  .cpa-bad  { color: var(--red);   font-weight: 600; }
+  .cpa-warn { color: var(--amber); font-weight: 600; }
+  .cpa-good { color: var(--teal);  font-weight: 600; }
+
+  /* ── SUMMARY BOX ── */
+  .summary-box {
+    background: var(--ink); color: #fff;
+    border-radius: var(--radius); padding: 28px; margin-bottom: 14px;
+  }
+  .summary-box h3 {
+    font-size: 13px; font-weight: 600; color: var(--teal-mid);
+    margin-bottom: 18px; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .summary-items { display: flex; flex-direction: column; gap: 12px; }
+  .summary-item  { display: flex; gap: 12px; font-size: 13px; line-height:1.65; color: rgba(255,255,255,.8); }
+  .summary-num {
+    font-size: 10px; font-weight: 600; color: var(--teal-mid);
+    background: rgba(19,176,155,.14); border-radius: 4px;
+    padding: 2px 7px; height: fit-content; margin-top: 3px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ── ACTION GRID ── */
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .action-grid { grid-template-columns: 1fr; } }
+  .action-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+  }
+  .action-priority { font-size: 10px; font-weight: 600; text-transform:uppercase; letter-spacing:.08em; margin-bottom:5px; }
+  .p1 { color: var(--teal); }
+  .p2 { color: var(--blue); }
+  .p3 { color: var(--amber); }
+  .action-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .action-body  { font-size: 12px; color: var(--ink-mid); line-height: 1.65; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; font-size: 12px;
+    color: var(--ink-soft);
+    padding: 30px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 34px 20px 30px; }
+    main   { padding: 28px 16px 60px; }
+    .kpi-value { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <p class="report-eyebrow">康乃心婦產科暨醫學美學診所</p>
+    <h1>Facebook 廣告成效分析報告</h1>
+    <p class="header-sub">2026年4月1日 – 6月30日　Q2 完整分析 + 6月單月 + 停止清單 + 總結建議</p>
+    <div class="header-tags">
+      <span class="header-tag">30 組廣告活動</span>
+      <span class="header-tag">22 組諮詢目標</span>
+      <span class="header-tag">總花費 NT$233,642</span>
+      <span class="header-tag">465 次私訊諮詢</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Q2 總覽 ── -->
+  <div class="period-divider">
+    <div class="period-divider-line"></div>
+    <div class="period-label">
+      <span class="period-dot" style="background:#13b09b"></span>
+      <span>Q2 總覽　2026/04 – 2026/06</span>
+    </div>
+    <div class="period-divider-line"></div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card accent">
+      <p class="kpi-label">Q2 總花費</p>
+      <p class="kpi-value">NT$233,642</p>
+      <p class="kpi-sub">30 組有效廣告活動</p>
+    </div>
+    <div class="kpi-card">
+      <p class="kpi-label">觸及人數</p>
+      <p class="kpi-value">454,410</p>
+      <p class="kpi-sub">不重複觸及</p>
+    </div>
+    <div class="kpi-card">
+      <p class="kpi-label">總曝光次數</p>
+      <p class="kpi-value">1,546,572</p>
+      <p class="kpi-sub">含重複觸及</p>
+    </div>
+    <div class="kpi-card">
+      <p class="kpi-label">私訊諮詢總量</p>
+      <p class="kpi-value">465 次</p>
+      <p class="kpi-sub">22 組諮詢目標廣告</p>
+    </div>
+    <div class="kpi-card">
+      <p class="kpi-label">平均 CPA（諮詢）</p>
+      <p class="kpi-value">NT$182.8</p>
+      <p class="kpi-sub">諮詢花費 / 諮詢次數</p>
+    </div>
+    <div class="kpi-card">
+      <p class="kpi-label">影片觀看（Thruplay）</p>
+      <p class="kpi-value">129,271</p>
+      <p class="kpi-sub">每次 NT$0.10</p>
+    </div>
+  </div>
+
+  <!-- ── CPA 總排名圖 ── -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Q2 全部廣告 CPA 排名</h2>
+      <p>諮詢目標廣告，越低越好</p>
+    </div>
+    <div class="chart-card">
+      <p class="chart-title">22 組廣告每次私訊諮詢成本（NT$）</p>
+      <p class="chart-desc">Q2 平均 CPA NT$182.8，最佳廣告 NT$50，最差廣告 NT$766——兩者差距 15 倍</p>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#0b7d6e"></span>NT$1–100（高效）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#1e4fa8"></span>NT$101–180（合格）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#b05e10"></span>NT$181–350（待改善）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#c02b2b"></span>NT$351+（停止）</div>
+      </div>
+      <div style="position:relative;width:100%;height:620px">
+        <canvas id="cpaChart" role="img" aria-label="Q2 各廣告 CPA 排名長條圖"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Q2 洞察 ── -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Q2 重點洞察</h2>
+      <p>依成效分類</p>
+    </div>
+    <div class="insight-grid">
+
+      <div class="insight-card good">
+        <div class="insight-meta">
+          <span class="badge badge-success">Q2 最佳</span>
+          <span class="insight-name">「鬆緊喜好🔞」私密話題</span>
+          <span class="insight-cpa">CPA NT$50.4</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$3,277</span>
+          <span class="stat-pill">諮詢 65 次</span>
+          <span class="stat-pill">曝光 9,205</span>
+        </div>
+        <p class="insight-body">Q2 CPA 最低、諮詢量最大的單支貼文廣告。從 3月（NT$28）到 Q2（NT$50）持續維持高效，跨季度表現穩定，印證私密健康話題是康乃心廣告的核心武器。建議長期維持，並持續擴充同類素材。</p>
+      </div>
+
+      <div class="insight-card good">
+        <div class="insight-meta">
+          <span class="badge badge-success">Q2 次佳</span>
+          <span class="insight-name">「在孩子來到世上之前」孕產情感</span>
+          <span class="insight-cpa">CPA NT$75.8</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$4,776</span>
+          <span class="stat-pill">諮詢 63 次</span>
+          <span class="stat-pill">曝光 18,936</span>
+        </div>
+        <p class="insight-body">Q2 第二高效廣告，情感敘事切入孕產照護，持續帶來高質量諮詢受眾。從 5月至 6月效益穩定未衰退，是品牌定位「最懂妳」最佳體現的廣告格式，建議複製成系列。</p>
+      </div>
+
+      <div class="insight-card good">
+        <div class="insight-meta">
+          <span class="badge badge-success">新方向確認</span>
+          <span class="insight-name">「竟然還在零期就能搶先發現癌症」</span>
+          <span class="insight-cpa">CPA NT$125.2</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$1,878</span>
+          <span class="stat-pill">諮詢 15 次</span>
+          <span class="stat-pill">曝光 13,889</span>
+        </div>
+        <p class="insight-body">Q2 新增的預防醫學方向，CPA 落在合理範圍。驗證「健康管理 + 女性預防醫學」可以有效引發諮詢意願，是目前測試最不足的方向，建議 Q3 擴大到 3–5 支不同角度廣告。</p>
+      </div>
+
+      <div class="insight-card mid">
+        <div class="insight-meta">
+          <span class="badge badge-info">量體最大</span>
+          <span class="insight-name">00-Reel 短影音用</span>
+          <span class="insight-cpa">CPA NT$199.5</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$27,332</span>
+          <span class="stat-pill">諮詢 137 次</span>
+          <span class="stat-pill">佔諮詢花費 32%</span>
+        </div>
+        <p class="insight-body">Q2 花費最高單一廣告（NT$27,332），諮詢量最多但 CPA 偏高。短影音格式天生是品牌認知工具而非直接轉換工具，以私訊諮詢為目標是設定錯誤。建議改為影片觀看目標，釋放的預算移至貼文諮詢廣告。</p>
+      </div>
+
+      <div class="insight-card warn">
+        <div class="insight-meta">
+          <span class="badge badge-warning">重複低效</span>
+          <span class="insight-name">「有些變化不該默默忍受」系列</span>
+          <span class="insight-cpa">CPA NT$215–312</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">兩支合計 NT$5,146</span>
+          <span class="stat-pill">諮詢共 19 次</span>
+        </div>
+        <p class="insight-body">兩支主題幾乎相同的廣告持續同時投放，Q2 合計花費超過 5,000，但諮詢量僅 19 次。被動語氣（「忍受」）停在共鳴，沒有推動行動。建議停掉貼文版，保留臨時廣告版並改寫語氣。</p>
+      </div>
+
+      <div class="insight-card bad">
+        <div class="insight-meta">
+          <span class="badge badge-danger">持續燒錢</span>
+          <span class="insight-name">「來了來了！！！」「醫美最高等級」「康乃心20年」</span>
+          <span class="insight-cpa">CPA NT$519–766</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">三支合計 NT$8,033</span>
+          <span class="stat-pill">諮詢共 12 次</span>
+        </div>
+        <p class="insight-body">Q2 CPA 最差的三支廣告，合計花費 8,033 元只換來 12 次諮詢。「來了來了」語意不明 CPA NT$766 為全期最差；「醫美最高等級」定位模糊 NT$579；「品牌20年」與諮詢轉換無關 NT$519。三支應立即停止。</p>
+      </div>
+
+      <div class="insight-card purple">
+        <div class="insight-meta">
+          <span class="badge badge-purple">再行銷素材庫</span>
+          <span class="insight-name">「實在太有感」見證 + 互動系列</span>
+          <span class="insight-cpa">互動成本 NT$5.5</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$2,930</span>
+          <span class="stat-pill">互動 536 次</span>
+          <span class="stat-pill">每次 NT$5.5</span>
+        </div>
+        <p class="insight-body">「實在太有感」Q2 累積 536 次高品質互動，每次成本僅 NT$5.5。這批互動受眾已對品牌有高度認知，是最理想的再行銷對象。建議建立「曾與此貼文互動」的自訂受眾，用諮詢目標做第二次觸達，預期 CPA 可低於 NT$80。</p>
+      </div>
+
+      <div class="insight-card mid">
+        <div class="insight-meta">
+          <span class="badge badge-info">觀看機器</span>
+          <span class="insight-name">00-1-康乃心-常態影片 - 競價+互動</span>
+          <span class="insight-cpa">每次觀看 NT$0.10</span>
+        </div>
+        <div class="insight-stats">
+          <span class="stat-pill">花費 NT$13,580</span>
+          <span class="stat-pill">觀看 129,271 次</span>
+          <span class="stat-pill">觸及 58,041</span>
+        </div>
+        <p class="insight-body">Q2 觸及效益最高的活動，NT$0.10 每次觀看，用 1.3 萬元讓 5.8 萬人認識品牌。但目前尚未搭配再行銷承接，等於觸及後沒有下一步。建議建立「觀看 75%」受眾做後續諮詢廣告觸達，將觀看轉化為諮詢。</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 6月單月 ── -->
+  <div class="period-divider">
+    <div class="period-divider-line"></div>
+    <div class="period-label">
+      <span class="period-dot" style="background:#1e4fa8"></span>
+      <span>2026/06 單月分析</span>
+    </div>
+    <div class="period-divider-line"></div>
+  </div>
+
+  <div class="compare-row">
+    <div class="compare-card">
+      <p class="compare-label">6月諮詢花費</p>
+      <p class="compare-value">NT$76,862</p>
+      <p class="compare-delta neu">佔 Q2 諮詢花費 90.4%</p>
+    </div>
+    <div class="compare-card">
+      <p class="compare-label">6月諮詢量</p>
+      <p class="compare-value">433 次</p>
+      <p class="compare-delta up">佔 Q2 總量 93%</p>
+    </div>
+    <div class="compare-card">
+      <p class="compare-label">6月平均 CPA</p>
+      <p class="compare-value">NT$177.5</p>
+      <p class="compare-delta up">↓ 較 Q2 均值改善 2.9%</p>
+    </div>
+    <div class="compare-card">
+      <p class="compare-label">6月活躍廣告數</p>
+      <p class="compare-value">17 組</p>
+      <p class="compare-delta neu">諮詢目標</p>
+    </div>
+    <div class="compare-card">
+      <p class="compare-label">6月最佳 CPA</p>
+      <p class="compare-value">NT$50.4</p>
+      <p class="compare-delta up">「鬆緊喜好」持續最強</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>6月廣告 CPA 排名</h2>
+      <p>僅計諮詢目標，6月仍活躍廣告</p>
+    </div>
+    <div class="chart-card">
+      <p class="chart-title">6月各廣告每次私訊諮詢成本</p>
+      <p class="chart-desc">6月 CPA 均值 NT$177.5，較 Q2 整體略有改善，但低效廣告仍在持續消耗預算</p>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#0b7d6e"></span>NT$1–100</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#1e4fa8"></span>NT$101–180</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#b05e10"></span>NT$181–350</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#c02b2b"></span>NT$351+</div>
+      </div>
+      <div style="position:relative;width:100%;height:480px">
+        <canvas id="juneCpaChart" role="img" aria-label="6月各廣告 CPA 排名"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 停止清單 ── -->
+  <div class="period-divider">
+    <div class="period-divider-line"></div>
+    <div class="period-label">
+      <span class="period-dot" style="background:#c02b2b"></span>
+      <span>建議停止廣告清單</span>
+    </div>
+    <div class="period-divider-line"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>🔴 立即停止（CPA > NT$400）</h2>
+      <p>合計浪費 NT$12,093，僅帶來 23 次諮詢</p>
+    </div>
+    <table class="stop-table">
+      <thead>
+        <tr>
+          <th>廣告名稱</th>
+          <th>花費</th>
+          <th>諮詢數</th>
+          <th>CPA</th>
+          <th>停止理由</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>「🤩來了 來了！！！」</td>
+          <td>NT$3,064</td>
+          <td>4 次</td>
+          <td class="cpa-bad">NT$766</td>
+          <td>語意不明，無任何療程連結，Q2 全期最差</td>
+        </tr>
+        <tr>
+          <td>圖-貼文「醫美的最高等級...」</td>
+          <td>NT$2,893</td>
+          <td>5 次</td>
+          <td class="cpa-bad">NT$579</td>
+          <td>定位模糊，無具體服務或痛點切入</td>
+        </tr>
+        <tr>
+          <td>圖-貼文「康乃心成立已滿20年」</td>
+          <td>NT$2,076</td>
+          <td>4 次</td>
+          <td class="cpa-bad">NT$519</td>
+          <td>品牌形象貼文不適合設諮詢目標</td>
+        </tr>
+        <tr>
+          <td>圖-貼文「如果只要花半小時安心與健康」</td>
+          <td>NT$4,320</td>
+          <td>10 次</td>
+          <td class="cpa-bad">NT$432</td>
+          <td>敘事模糊，無具體療程或問題解決</td>
+        </tr>
+        <tr>
+          <td>圖-單次-618活動「夏天來了大方露一波」</td>
+          <td>NT$956</td>
+          <td>2 次</td>
+          <td class="cpa-bad">NT$478</td>
+          <td>季節借勢廣告，與診所核心服務無關聯</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>🟠 建議整合或重寫（CPA NT$200–400）</h2>
+      <p>共 6 支，問題明確可改善</p>
+    </div>
+    <table class="stop-table">
+      <thead>
+        <tr>
+          <th>廣告名稱</th>
+          <th>花費</th>
+          <th>諮詢數</th>
+          <th>CPA</th>
+          <th>建議</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>臨時-貼文「✨有些變化不該默默忍受」</td>
+          <td>NT$3,429</td>
+          <td>11 次</td>
+          <td class="cpa-warn">NT$312</td>
+          <td>與臨時廣告版重疊，停此支，保留下方</td>
+        </tr>
+        <tr>
+          <td>貼文「真的假的⁉️」</td>
+          <td>NT$3,063</td>
+          <td>6 次</td>
+          <td class="cpa-warn">NT$511</td>
+          <td>標題吸引點擊但無法引導諮詢意圖，停止</td>
+        </tr>
+        <tr>
+          <td>圖-貼文「保養天天擦滿還一瓶比一瓶高級」</td>
+          <td>NT$2,989</td>
+          <td>10 次</td>
+          <td class="cpa-warn">NT$299</td>
+          <td>保養話術不適合醫療諮詢轉換，改寫為療程成果</td>
+        </tr>
+        <tr>
+          <td>貼文「來～來～來～別害羞😳」</td>
+          <td>NT$1,382</td>
+          <td>6 次</td>
+          <td class="cpa-warn">NT$230</td>
+          <td>語氣輕浮缺乏問題解決感，重寫文案</td>
+        </tr>
+        <tr>
+          <td>臨時廣告-有些變化其實不該默默忍受</td>
+          <td>NT$1,717</td>
+          <td>8 次</td>
+          <td class="cpa-warn">NT$215</td>
+          <td>保留但改寫：「被動忍受」→「主動可改善」</td>
+        </tr>
+        <tr>
+          <td>00-Reel短影音用</td>
+          <td>NT$27,332</td>
+          <td>137 次</td>
+          <td class="cpa-warn">NT$200</td>
+          <td>目標設定錯誤，改為影片觀看目標</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>✅ 確認繼續投放</h2>
+    </div>
+    <table class="stop-table">
+      <thead>
+        <tr>
+          <th>廣告名稱</th>
+          <th>花費</th>
+          <th>諮詢數</th>
+          <th>CPA</th>
+          <th>理由</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>「ㄧ講到鬆緊喜好🔞」</td>
+          <td>NT$3,277</td>
+          <td>65 次</td>
+          <td class="cpa-good">NT$50.4</td>
+          <td>Q2 最佳，跨季穩定，持續加碼</td>
+        </tr>
+        <tr>
+          <td>「在孩子來到世上之前」</td>
+          <td>NT$4,776</td>
+          <td>63 次</td>
+          <td class="cpa-good">NT$75.8</td>
+          <td>Q2 次佳，情感孕產方向主力</td>
+        </tr>
+        <tr>
+          <td>「竟然還在零期就能搶先發現癌症」</td>
+          <td>NT$1,878</td>
+          <td>15 次</td>
+          <td class="cpa-good">NT$125.2</td>
+          <td>預防醫學新方向，持續觀察並擴大測試</td>
+        </tr>
+        <tr>
+          <td>臨時廣告-來了來了！！私密處不適</td>
+          <td>NT$2,269</td>
+          <td>17 次</td>
+          <td class="cpa-good">NT$133.5</td>
+          <td>私密健康方向有效，可改寫標題後持續</td>
+        </tr>
+        <tr>
+          <td>「把享受直接升到最頂」</td>
+          <td>NT$3,198</td>
+          <td>21 次</td>
+          <td class="cpa-good">NT$152.3</td>
+          <td>效益合格，觀察下月是否繼續穩定</td>
+        </tr>
+        <tr>
+          <td>00-1-康乃心-常態影片（觀看目標）</td>
+          <td>NT$13,580</td>
+          <td>—</td>
+          <td class="cpa-good">NT$0.10/觀看</td>
+          <td>品牌認知機器，搭配再行銷後效益加倍</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 總結建議 ── -->
+  <div class="period-divider">
+    <div class="period-divider-line"></div>
+    <div class="period-label">
+      <span class="period-dot" style="background:#6b3fa0"></span>
+      <span>總結建議　Q3 行動指南</span>
+    </div>
+    <div class="period-divider-line"></div>
+  </div>
+
+  <div class="summary-box">
+    <h3>Q2 核心發現</h3>
+    <div class="summary-items">
+      <div class="summary-item">
+        <span class="summary-num">發現 01</span>
+        <span>私密健康話題是康乃心廣告最強的護城河。「鬆緊喜好」從 3月 NT$28 到 Q2 NT$50，跨季維持高效。目前同類型廣告僅此一支，嚴重低度開發。Q3 應擴充至 3–5 支不同角度：私密乾澀、閨蜜電波初體驗、產後私密修復等，每支設定不同受眾年齡層測試。</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num">發現 02</span>
+        <span>Reel 每次諮詢 NT$200，是同期貼文廣告的 2–4 倍。這不是素材問題，是目標設定問題。短影音的正確角色是品牌認知 → 再行銷漏斗的第一層，不是直接轉換。Q3 應將 Reel 移入觀看目標活動，省下的 NT$27,332 中的一半移至高效貼文廣告，預期整體 CPA 可下降 20% 以上。</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num">發現 03</span>
+        <span>Q2 有 5 支廣告 CPA 超過 NT$400，合計花費 NT$12,309，只帶來 25 次諮詢，平均每次 NT$492。同樣預算放在「鬆緊喜好」可帶來 244 次諮詢。停掉這 5 支是 Q3 最高 ROI 的單一動作。</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num">發現 04</span>
+        <span>「實在太有感」Q2 累積 536 次互動，常態影片累積 129,271 次觀看，這兩批受眾從未被再行銷觸達過。這是目前最被浪費的資產。Q3 建立再行銷受眾並用諮詢目標觸達，是不需要增加預算就能提升整體 CPA 的最快路徑。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>Q3 行動優先序</h2>
+    </div>
+    <div class="action-grid">
+      <div class="action-card">
+        <p class="action-priority p1">P1 本週執行</p>
+        <p class="action-title">停止 5 支高 CPA 廣告</p>
+        <p class="action-body">「來了來了」「醫美最高等級」「康乃心20年」「半小時安心」「618夏天露一波」立即暫停。釋放約 NT$13,000 預算，直接挹注高效廣告。</p>
+      </div>
+      <div class="action-card">
+        <p class="action-priority p1">P1 本週執行</p>
+        <p class="action-title">Reel 改為觀看目標</p>
+        <p class="action-body">00-Reel 暫停目前活動，新建「影片觀看」目標活動，素材不變。每日預算 NT$300，版位限定 Reels。同時建立「觀看 75%」自訂受眾備用。</p>
+      </div>
+      <div class="action-card">
+        <p class="action-priority p1">P1 本週執行</p>
+        <p class="action-title">啟動互動受眾再行銷</p>
+        <p class="action-body">建立「曾與實在太有感貼文互動」+ 「觀看常態影片 75%」的自訂受眾，投放私密話題或孕產情感廣告，目標私訊諮詢。預算 NT$2,000 測試，預期 CPA 低於 NT$80。</p>
+      </div>
+      <div class="action-card">
+        <p class="action-priority p2">P2 兩週內</p>
+        <p class="action-title">擴充私密健康話題系列</p>
+        <p class="action-body">以「鬆緊喜好」的格式新製 3 支廣告：「私密乾澀不是熟齡才有的事」「第一次做閨蜜電波，她說⋯⋯」「產後私密鬆弛，妳不是一個人」，分別對應更年期、初次體驗、孕產後三個族群。</p>
+      </div>
+      <div class="action-card">
+        <p class="action-priority p2">P2 兩週內</p>
+        <p class="action-title">複製孕產情感廣告系列</p>
+        <p class="action-body">以「在孩子來到世上之前」的格式，再生產「產後第一次照鏡子」「剖腹後的那段沉默」兩支，延續情感敘事節奏，持續觸及孕產族群。</p>
+      </div>
+      <div class="action-card">
+        <p class="action-priority p3">P3 本月內</p>
+        <p class="action-title">預防醫學方向規模化</p>
+        <p class="action-body">「癌症零期篩查」驗證有效，Q3 圍繞預防醫學開發 3 支廣告：HPV 疫苗、婦科定期篩查、荷爾蒙健康管理，對應 35–55 歲女性的健康焦慮切入點。</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  康乃心 Facebook 廣告成效分析報告　Q2 2026（4月–6月）+ 停止清單 + Q3 行動建議　資料來源：Facebook Ads Manager
+</footer>
+
+<script>
+const getColor = cpa => {
+  if (cpa <= 100) return '#0b7d6e';
+  if (cpa <= 180) return '#1e4fa8';
+  if (cpa <= 350) return '#b05e10';
+  return '#c02b2b';
+};
+
+// Q2 全部 CPA 排名
+const q2Data = [
+  { label: '「鬆緊喜好🔞」私密話題',        cpa: 50.4,  spend: 3277,  n: 65 },
+  { label: '「在孩子來到世上之前」孕產情感',  cpa: 75.8,  spend: 4776,  n: 63 },
+  { label: '「竟然在零期就能發現癌症」',      cpa: 125.2, spend: 1878,  n: 15 },
+  { label: '臨時廣告-私密處不適',            cpa: 133.5, spend: 2269,  n: 17 },
+  { label: '臨時廣告-跟著總監-閨蜜電波',     cpa: 151.3, spend: 605,   n: 4  },
+  { label: '「把享受直接升到最頂」',          cpa: 152.3, spend: 3198,  n: 21 },
+  { label: '「還在煩惱肉毒品牌怎麼挑」',      cpa: 178.9, spend: 3400,  n: 19 },
+  { label: '00-Reel 短影音用',               cpa: 199.5, spend: 27332, n: 137},
+  { label: '圖-貼文「PicoHi 皮秒雷射體驗」', cpa: 202.1, spend: 4244,  n: 21 },
+  { label: '「還跟最夯的閨蜜電波不熟？」',    cpa: 202.5, spend: 4456,  n: 22 },
+  { label: '臨時廣告-有些變化不該忍受',       cpa: 214.6, spend: 1717,  n: 8  },
+  { label: '臨時廣告-一支影片看懂閨蜜電波',   cpa: 222.6, spend: 2671,  n: 12 },
+  { label: '「來～來～來～別害羞」',           cpa: 230.3, spend: 1382,  n: 6  },
+  { label: '圖-貼文「保養天天擦高級」',       cpa: 298.9, spend: 2989,  n: 10 },
+  { label: '臨時-貼文「有些變化不該忍受」',   cpa: 311.7, spend: 3429,  n: 11 },
+  { label: '「不用找了母親節禮物」',           cpa: 329.0, spend: 987,   n: 3  },
+  { label: '「如果花半小時買一整年安心」',     cpa: 432.0, spend: 4320,  n: 10 },
+  { label: '618活動「夏天大方露一波」',        cpa: 478.0, spend: 956,   n: 2  },
+  { label: '「真的假的⁉️」',                 cpa: 510.5, spend: 3063,  n: 6  },
+  { label: '圖-貼文「康乃心成立20年」',       cpa: 519.0, spend: 2076,  n: 4  },
+  { label: '圖-貼文「醫美的最高等級」',       cpa: 578.6, spend: 2893,  n: 5  },
+  { label: '「🤩來了 來了！！！」',           cpa: 766.0, spend: 3064,  n: 4  },
+];
+
+new Chart(document.getElementById('cpaChart'), {
+  type: 'bar',
+  data: {
+    labels: q2Data.map(d => d.label),
+    datasets: [{
+      data: q2Data.map(d => d.cpa),
+      backgroundColor: q2Data.map(d => getColor(d.cpa)),
+      borderRadius: 4, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: ctx => q2Data[ctx[0].dataIndex].label,
+          label: ctx => {
+            const d = q2Data[ctx.dataIndex];
+            return [`每次諮詢成本：NT$${d.cpa}`, `花費：NT$${d.spend.toLocaleString()}`, `諮詢：${d.n} 次`];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color:'#8892aa', font:{size:11}, callback: v => 'NT$'+v },
+        grid: { color:'rgba(60,80,140,0.07)' }, border:{display:false}
+      },
+      y: {
+        ticks: { color:'#3d4a6b', font:{size:11}, autoSkip:false },
+        grid: { display:false }, border:{display:false}
+      }
+    }
+  }
+});
+
+// 6月 CPA 排名（結束時間 >= 2026-06 的廣告）
+const juneData = [
+  { label: '「鬆緊喜好🔞」私密話題',         cpa: 50.4,  spend: 3277,  n: 65 },
+  { label: '「在孩子來到世上之前」',           cpa: 75.8,  spend: 4776,  n: 63 },
+  { label: '「竟然在零期就能發現癌症」',       cpa: 125.2, spend: 1878,  n: 15 },
+  { label: '臨時廣告-私密處不適',             cpa: 133.5, spend: 2269,  n: 17 },
+  { label: '「把享受直接升到最頂」',           cpa: 152.3, spend: 3198,  n: 21 },
+  { label: '「還在煩惱肉毒品牌怎麼挑」',       cpa: 178.9, spend: 3400,  n: 19 },
+  { label: '00-Reel 短影音用',               cpa: 199.5, spend: 27332, n: 137},
+  { label: '圖-貼文「PicoHi 皮秒雷射」',     cpa: 202.1, spend: 4244,  n: 21 },
+  { label: '「還跟閨蜜電波不熟？」',           cpa: 202.5, spend: 4456,  n: 22 },
+  { label: '臨時廣告-一支影片看懂閨蜜電波',   cpa: 222.6, spend: 2671,  n: 12 },
+  { label: '圖-貼文「保養天天擦高級」',       cpa: 298.9, spend: 2989,  n: 10 },
+  { label: '「如果花半小時買一整年安心」',     cpa: 432.0, spend: 4320,  n: 10 },
+  { label: '「真的假的⁉️」',                 cpa: 510.5, spend: 3063,  n: 6  },
+  { label: '圖-貼文「康乃心成立20年」',       cpa: 519.0, spend: 2076,  n: 4  },
+  { label: '圖-貼文「醫美的最高等級」',       cpa: 578.6, spend: 2893,  n: 5  },
+  { label: '「🤩來了 來了！！！」',           cpa: 766.0, spend: 3064,  n: 4  },
+];
+
+new Chart(document.getElementById('juneCpaChart'), {
+  type: 'bar',
+  data: {
+    labels: juneData.map(d => d.label),
+    datasets: [{
+      data: juneData.map(d => d.cpa),
+      backgroundColor: juneData.map(d => getColor(d.cpa)),
+      borderRadius: 4, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: ctx => juneData[ctx[0].dataIndex].label,
+          label: ctx => {
+            const d = juneData[ctx.dataIndex];
+            return [`每次諮詢成本：NT$${d.cpa}`, `花費：NT$${d.spend.toLocaleString()}`, `諮詢：${d.n} 次`];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color:'#8892aa', font:{size:11}, callback: v => 'NT$'+v },
+        grid: { color:'rgba(60,80,140,0.07)' }, border:{display:false}
+      },
+      y: {
+        ticks: { color:'#3d4a6b', font:{size:11}, autoSkip:false },
+        grid: { display:false }, border:{display:false}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
